@@ -898,7 +898,7 @@ footer .footer-name {
     <h1 class="gate-title">CHARLIE ROBINSON</h1>
     <p class="gate-desc">Private site. Enter the password to continue.</p>
     <div class="vault-input-wrap">
-      <div class="pw-wrap"><input type="password" class="vault-input" id="gate-password" placeholder="Password..." onkeydown="if(event.key==='Enter')unlockGate()"><span class="pw-toggle" onclick="togglePw('gate-password',this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span></div>
+      <div class="pw-wrap"><input type="password" class="vault-input" id="gate-password" placeholder="Password..." onkeydown="if(event.key==='Enter')unlockGate()"><span class="pw-toggle" onclick="togglePw('gate-password',this)">🐵</span></div>
       <button class="vault-btn" onclick="unlockGate()">ENTER</button>
     </div>
     <div class="vault-error" id="gate-error">Wrong password 🚫</div>
@@ -1162,7 +1162,7 @@ footer .footer-name {
       <div class="vault-title">Private Section</div>
       <div class="vault-desc">This area is password protected. If you know, you know.</div>
       <div class="vault-input-wrap">
-        <div class="pw-wrap"><input type="password" class="vault-input" id="vault-password" placeholder="Enter password..." onkeydown="if(event.key==='Enter')unlockVault()"><span class="pw-toggle" onclick="togglePw('vault-password',this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span></div>
+        <div class="pw-wrap"><input type="password" class="vault-input" id="vault-password" placeholder="Enter password..." onkeydown="if(event.key==='Enter')unlockVault()"><span class="pw-toggle" onclick="togglePw('vault-password',this)">🐵</span></div>
         <button class="vault-btn" onclick="unlockVault()">UNLOCK</button>
       </div>
       <div class="vault-error" id="vault-error">Wrong password. Nice try though 😏</div>
@@ -1287,10 +1287,10 @@ function togglePw(id, el) {
   const input = document.getElementById(id);
   if (input.type === 'password') {
     input.type = 'text';
-    el.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    el.textContent = '🙈';
   } else {
     input.type = 'password';
-    el.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    el.textContent = '🐵';
   }
 }
 
