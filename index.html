@@ -760,6 +760,54 @@ section {
   margin: 0 auto 2rem;
 }
 
+.rating-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.rating-label {
+  font-size: 0.8rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stars { display: flex; gap: 0.2rem; }
+
+.star {
+  font-size: 1.6rem;
+  color: rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.star:hover, .star.active { color: #f5c518; }
+.star:hover { transform: scale(1.2); }
+
+.rating-text {
+  font-size: 0.75rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.05em;
+}
+
+.comment-error {
+  color: #ff4444;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.comment-error.show { opacity: 1; }
+
+.comment-rating {
+  color: #f5c518;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
 .comment-textarea {
   background: rgba(255,255,255,0.05);
   border: 1px solid var(--glass-border);
@@ -1247,7 +1295,19 @@ footer .footer-name {
   </div>
   <div class="comment-form reveal">
     <input type="text" class="vault-input comment-name-input" id="comment-name" placeholder="Your name..." style="width:100%;margin-bottom:0.8rem;">
+    <div class="rating-wrap" id="rating-wrap">
+      <span class="rating-label">Rating:</span>
+      <span class="stars" id="stars">
+        <span class="star" data-v="1">★</span>
+        <span class="star" data-v="2">★</span>
+        <span class="star" data-v="3">★</span>
+        <span class="star" data-v="4">★</span>
+        <span class="star" data-v="5">★</span>
+      </span>
+      <span class="rating-text" id="rating-text"></span>
+    </div>
     <textarea class="vault-input comment-textarea" id="comment-text" placeholder="Leave a comment..." rows="3"></textarea>
+    <div class="comment-error" id="comment-error">Fill in your name, rating, and comment!</div>
     <button class="vault-btn" onclick="postComment()" style="margin-top:0.8rem;">POST</button>
   </div>
   <div class="comments-list" id="comments-list"></div>
@@ -1364,6 +1424,29 @@ function closeFriend(e) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFriend(); });
 
 // Comments
+// Star rating
+let selectedRating = 0;
+const ratingLabels = ['', 'Terrible', 'Meh', 'Decent', 'Sick', 'Goated'];
+document.querySelectorAll('.star').forEach(star => {
+  star.addEventListener('click', () => {
+    selectedRating = parseInt(star.dataset.v);
+    document.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.v) <= selectedRating);
+    });
+    document.getElementById('rating-text').textContent = ratingLabels[selectedRating];
+  });
+  star.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.star').forEach(s => {
+      s.style.color = parseInt(s.dataset.v) <= parseInt(star.dataset.v) ? '#f5c518' : '';
+    });
+  });
+  star.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.star').forEach(s => {
+      s.style.color = s.classList.contains('active') ? '#f5c518' : '';
+    });
+  });
+});
+
 function loadComments() {
   const comments = JSON.parse(localStorage.getItem('cmr_comments') || '[]');
   const list = document.getElementById('comments-list');
@@ -1377,11 +1460,13 @@ function loadComments() {
   comments.slice().reverse().forEach(c => {
     const card = document.createElement('div');
     card.className = 'comment-card';
+    const stars = c.rating ? '<div class="comment-rating">' + '★'.repeat(c.rating) + '☆'.repeat(5 - c.rating) + '</div>' : '';
     card.innerHTML = `
       <div class="comment-header">
         <span class="comment-author">${escapeHtml(c.name)}</span>
         <span class="comment-time">${c.time}</span>
       </div>
+      ${stars}
       <div class="comment-body">${escapeHtml(c.text)}</div>
     `;
     list.appendChild(card);
@@ -1391,20 +1476,28 @@ function loadComments() {
 function postComment() {
   const nameEl = document.getElementById('comment-name');
   const textEl = document.getElementById('comment-text');
+  const error = document.getElementById('comment-error');
   const name = nameEl.value.trim();
   const text = textEl.value.trim();
-  if (!name || !text) return;
+  if (!name || !text || !selectedRating) {
+    error.classList.add('show');
+    setTimeout(() => error.classList.remove('show'), 2500);
+    return;
+  }
   const comments = JSON.parse(localStorage.getItem('cmr_comments') || '[]');
   const now = new Date();
   const time = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  comments.push({ name, text, time });
+  comments.push({ name, text, time, rating: selectedRating });
   localStorage.setItem('cmr_comments', JSON.stringify(comments));
   // Send notification
   fetch('https://ntfy.sh/cmr-site-comments-x7k9', {
     method: 'POST',
-    headers: { 'Title': name + ' commented', 'Tags': 'speech_balloon' },
+    headers: { 'Title': name + ' rated ' + '★'.repeat(selectedRating), 'Tags': 'speech_balloon' },
     body: text
   }).catch(() => {});
+  selectedRating = 0;
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+  document.getElementById('rating-text').textContent = '';
   nameEl.value = '';
   textEl.value = '';
   loadComments();
