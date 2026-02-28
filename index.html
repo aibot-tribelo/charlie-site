@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlie Robinson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --white: #ffffff;
+  --off-white: #f0f0f0;
+  --light-grey: #e0e0e0;
+  --mid-grey: #888;
+  --dark: #0a0a0a;
+  --darker: #050505;
+  --accent: #d4d4d4;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+  --glow: rgba(255,255,255,0.15);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--darker);
+  color: var(--off-white);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(20px);
+  background: rgba(5,5,5,0.7);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+nav .logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  color: var(--white);
+}
+
+nav .logo span { color: var(--mid-grey); font-weight: 300; }
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem;
+}
+
+nav a {
+  color: var(--mid-grey);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+nav a:hover { color: var(--white); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 2rem;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  letter-spacing: 0.08em;
+  line-height: 0.9;
+  color: var(--white);
+  animation: fadeUp 1s ease-out;
+}
+
+.hero .tagline {
+  font-size: 1.1rem;
+  color: var(--mid-grey);
+  margin-top: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: fadeUp 1s ease-out 0.2s both;
+}
+
+.hero .scroll-hint {
+  position: absolute;
+  bottom: 3rem;
+  animation: bounce 2s infinite;
+  color: var(--mid-grey);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hero .scroll-hint::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--mid-grey), transparent);
+  margin: 0.8rem auto 0;
+}
+
+/* ─── SECTIONS ─── */
+section {
+  padding: 8rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  color: var(--mid-grey);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--white);
+  letter-spacing: 0.05em;
+  margin-bottom: 3rem;
+}
+
+/* ─── ABOUT ─── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.about-text p {
+  color: var(--accent);
+  font-weight: 300;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.stat-card .number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--white);
+}
+
+.stat-card .label {
+  font-size: 0.8rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+
+/* ─── PASSIONS (sports/interests) ─── */
+.passions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.passion-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.passion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.passion-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+}
+
+.passion-card:hover::before { opacity: 1; }
+
+.passion-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.passion-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  color: var(--white);
+}
+
+.passion-rank {
+  font-size: 0.7rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* ─── CARS ─── */
+.cars-section {
+  background: linear-gradient(180deg, var(--darker) 0%, rgba(15,15,15,1) 50%, var(--darker) 100%);
+  padding: 8rem 3rem;
+  text-align: center;
+}
+
+.cars-section .section-title { margin-bottom: 1rem; }
+
+.cars-subtitle {
+  color: var(--mid-grey);
+  font-weight: 300;
+  font-size: 1rem;
+  margin-bottom: 4rem;
+  letter-spacing: 0.05em;
+}
+
+.cars-showcase {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.car-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  width: 380px;
+  transition: all 0.4s;
+  position: relative;
+}
+
+.car-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.05));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.car-card:hover { transform: translateY(-6px); }
+.car-card:hover::after { opacity: 1; }
+
+.car-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.car-desc {
+  color: var(--mid-grey);
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.car-stat {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-around;
+}
+
+.car-stat div {
+  text-align: center;
+}
+
+.car-stat .val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  color: var(--white);
+}
+
+.car-stat .lbl {
+  font-size: 0.65rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ─── FAMILY & FRIENDS ─── */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.person-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.person-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.person-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.5rem;
+}
+
+.person-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: var(--white);
+}
+
+.person-role {
+  font-size: 0.7rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+
+/* ─── VAULT (locked section) ─── */
+.vault-section {
+  text-align: center;
+  padding: 8rem 3rem;
+}
+
+.vault-container {
+  max-width: 500px;
+  margin: 0 auto;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 4rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.vault-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.03), transparent, rgba(255,255,255,0.03), transparent);
+  animation: vaultSpin 20s linear infinite;
+  z-index: 0;
+}
+
+.vault-container > * { position: relative; z-index: 1; }
+
+.vault-lock {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.vault-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.vault-desc {
+  color: var(--mid-grey);
+  font-size: 0.85rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+.vault-input-wrap {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.vault-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 0.9rem 1.3rem;
+  color: var(--white);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  width: 240px;
+  transition: border-color 0.3s;
+}
+
+.vault-input:focus {
+  border-color: rgba(255,255,255,0.25);
+}
+
+.vault-input::placeholder { color: rgba(255,255,255,0.2); }
+
+.vault-btn {
+  background: var(--white);
+  color: var(--dark);
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem 1.8rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.vault-btn:hover {
+  background: var(--light-grey);
+  transform: scale(1.05);
+}
+
+.vault-error {
+  color: #ff4444;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.vault-error.show { opacity: 1; }
+
+.vault-content {
+  display: none;
+  text-align: left;
+  margin-top: 2rem;
+}
+
+.vault-content.unlocked { display: block; animation: fadeUp 0.6s ease-out; }
+
+.vault-content h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+
+.vault-content p {
+  color: var(--accent);
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.vault-content .vault-stat {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  border-top: none;
+  justify-content: flex-start;
+}
+
+.vault-content .vault-stat div { text-align: left; }
+
+/* ─── PHOTOS GALLERY ─── */
+.gallery-section { text-align: center; }
+
+.gallery-placeholder {
+  background: var(--glass);
+  border: 2px dashed var(--glass-border);
+  border-radius: 20px;
+  padding: 5rem 3rem;
+  color: var(--mid-grey);
+  font-weight: 300;
+}
+
+.gallery-placeholder .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+/* ─── FOOTER ─── */
+footer {
+  text-align: center;
+  padding: 4rem 2rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--mid-grey);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+footer .footer-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes vaultSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  nav ul { gap: 1.2rem; }
+  nav a { font-size: 0.7rem; }
+  section { padding: 5rem 1.5rem; }
+  .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .cars-showcase { flex-direction: column; align-items: center; }
+  .car-card { width: 100%; max-width: 380px; }
+  .vault-input-wrap { flex-direction: column; align-items: center; }
+  .vault-input { width: 100%; }
+  .cars-section, .vault-section { padding: 5rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">CMR <span>/ 13</span></div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#passions">Passions</a></li>
+    <li><a href="#cars">Cars</a></li>
+    <li><a href="#people">People</a></li>
+    <li><a href="#vault">Vault</a></li>
+    <li><a href="#gallery">Photos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>CHARLIE<br>ROBINSON</h1>
+  <p class="tagline">Snowboarder · Tech Head · Car Enthusiast</p>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">01 — Who I Am</p>
+    <h2 class="section-title">About Me</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm Charlie — 13 years old, based in Corsham, and currently at The Corsham School. I'm into tech, gadgets, the finer things in life, and anything that goes fast.</p>
+      <p>When I'm not in school, you'll find me snowboarding, out on the golf course, in the water, on the rugby pitch, or on the padel court. I like to keep busy.</p>
+      <p>I appreciate quality — whether that's a clean piece of tech, a well-designed car, or just good times with the boys.</p>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat-card">
+        <div class="number">13</div>
+        <div class="label">Years Old</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">5</div>
+        <div class="label">Sports</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">∞</div>
+        <div class="label">Ambition</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">📍</div>
+        <div class="label">Corsham</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PASSIONS -->
+<section id="passions">
+  <div class="reveal">
+    <p class="section-label">02 — What I Love</p>
+    <h2 class="section-title">Passions</h2>
+  </div>
+  <div class="passions-grid">
+    <div class="passion-card reveal">
+      <span class="passion-icon">🏂</span>
+      <div class="passion-name">Snowboarding</div>
+      <div class="passion-rank">#1 Sport</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">⛳</span>
+      <div class="passion-name">Golf</div>
+      <div class="passion-rank">#2 Sport</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">🌊</span>
+      <div class="passion-name">Watersports</div>
+      <div class="passion-rank">#3 Sport</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">🏉</span>
+      <div class="passion-name">Rugby</div>
+      <div class="passion-rank">#4 Sport</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">🎾</span>
+      <div class="passion-name">Padel</div>
+      <div class="passion-rank">#5 Sport</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">💻</span>
+      <div class="passion-name">Tech & Gadgets</div>
+      <div class="passion-rank">Always</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">💰</span>
+      <div class="passion-name">Business</div>
+      <div class="passion-rank">Hustle</div>
+    </div>
+    <div class="passion-card reveal">
+      <span class="passion-icon">🏎️</span>
+      <div class="passion-name">Supercars</div>
+      <div class="passion-rank">Obsessed</div>
+    </div>
+  </div>
+</section>
+
+<!-- CARS -->
+<div class="cars-section" id="cars">
+  <div class="reveal">
+    <p class="section-label">03 — Dream Machines</p>
+    <h2 class="section-title">Cars</h2>
+    <p class="cars-subtitle">Speed is a lifestyle, not a number</p>
+  </div>
+  <div class="cars-showcase">
+    <div class="car-card reveal">
+      <div class="car-brand">Koenigsegg</div>
+      <div class="car-desc">Swedish hypercar perfection. No compromises, pure engineering madness. The Jesko Absolut is the fastest thing on four wheels.</div>
+      <div class="car-stat">
+        <div>
+          <div class="val">330+</div>
+          <div class="lbl">MPH</div>
+        </div>
+        <div>
+          <div class="val">1,600</div>
+          <div class="lbl">BHP</div>
+        </div>
+        <div>
+          <div class="val">£2.5M</div>
+          <div class="lbl">Price</div>
+        </div>
+      </div>
+    </div>
+    <div class="car-card reveal">
+      <div class="car-brand">Bugatti</div>
+      <div class="car-desc">The ultimate in luxury speed. The Chiron blends insane power with a cabin that could be a five-star hotel. Nothing else comes close.</div>
+      <div class="car-stat">
+        <div>
+          <div class="val">304</div>
+          <div class="lbl">MPH</div>
+        </div>
+        <div>
+          <div class="val">1,578</div>
+          <div class="lbl">BHP</div>
+        </div>
+        <div>
+          <div class="val">£2.4M</div>
+          <div class="lbl">Price</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PEOPLE -->
+<section id="people">
+  <div class="reveal">
+    <p class="section-label">04 — My People</p>
+    <h2 class="section-title">Family</h2>
+  </div>
+  <div class="people-grid">
+    <div class="person-card reveal">
+      <div class="person-avatar">👨</div>
+      <div class="person-name">Noel</div>
+      <div class="person-role">Dad</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">👩</div>
+      <div class="person-name">Helen</div>
+      <div class="person-role">Mum</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">👦</div>
+      <div class="person-name">Olly</div>
+      <div class="person-role">Brother</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">👧</div>
+      <div class="person-name">Bella</div>
+      <div class="person-role">Sister</div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h2 class="section-title">The Boys</h2>
+  </div>
+  <div class="people-grid">
+    <div class="person-card reveal">
+      <div class="person-avatar">🤙</div>
+      <div class="person-name">Seb</div>
+      <div class="person-role">Friend</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">🤙</div>
+      <div class="person-name">Kal</div>
+      <div class="person-role">Friend</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">🤙</div>
+      <div class="person-name">Ed</div>
+      <div class="person-role">Friend</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">🤙</div>
+      <div class="person-name">Noah</div>
+      <div class="person-role">Friend</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">🤙</div>
+      <div class="person-name">Troy</div>
+      <div class="person-role">Friend</div>
+    </div>
+    <div class="person-card reveal">
+      <div class="person-avatar">🤙</div>
+      <div class="person-name">Tommy</div>
+      <div class="person-role">Friend</div>
+    </div>
+  </div>
+</section>
+
+<!-- VAULT -->
+<div class="vault-section" id="vault">
+  <div class="reveal">
+    <p class="section-label">05 — Classified</p>
+    <h2 class="section-title">The Vault</h2>
+  </div>
+  <div class="vault-container reveal">
+    <div id="vault-locked">
+      <div class="vault-lock">🔒</div>
+      <div class="vault-title">Private Section</div>
+      <div class="vault-desc">This area is password protected. If you know, you know.</div>
+      <div class="vault-input-wrap">
+        <input type="password" class="vault-input" id="vault-password" placeholder="Enter password..." onkeydown="if(event.key==='Enter')unlockVault()">
+        <button class="vault-btn" onclick="unlockVault()">UNLOCK</button>
+      </div>
+      <div class="vault-error" id="vault-error">Wrong password. Nice try though 😏</div>
+    </div>
+    <div class="vault-content" id="vault-content">
+      <div class="vault-lock" style="text-align:center;">🔓</div>
+      <h3>The Money Side</h3>
+      <p>I trade markets — stocks and prediction markets like Polymarket. Started young, learning fast. It's not just about the money (okay, it's mostly about the money), but also about understanding how the world works.</p>
+      <p>Markets teach you to think clearly, manage risk, and stay calm when everyone else is panicking. Not bad skills for a 13-year-old.</p>
+      <div class="vault-stat">
+        <div>
+          <div class="val">📈</div>
+          <div class="lbl">Markets</div>
+        </div>
+        <div>
+          <div class="val">🧠</div>
+          <div class="lbl">Strategy</div>
+        </div>
+        <div>
+          <div class="val">💎</div>
+          <div class="lbl">Diamond Hands</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section id="gallery" class="gallery-section">
+  <div class="reveal">
+    <p class="section-label">06 — Gallery</p>
+    <h2 class="section-title">Photos</h2>
+  </div>
+  <div class="gallery-placeholder reveal">
+    <div class="icon">📸</div>
+    <p>Photos coming soon — send them over and I'll make it look 🔥</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">CHARLIE MALCOLM ROBINSON</div>
+  <p>Built different since 2013</p>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Vault
+function unlockVault() {
+  const input = document.getElementById('vault-password');
+  const error = document.getElementById('vault-error');
+  const locked = document.getElementById('vault-locked');
+  const content = document.getElementById('vault-content');
+
+  if (input.value === atob('QmVsbGFib28yMQ==')) {
+    locked.style.display = 'none';
+    content.classList.add('unlocked');
+  } else {
+    error.classList.add('show');
+    input.value = '';
+    setTimeout(() => error.classList.remove('show'), 2000);
+  }
+}
+</script>
+
+</body>
+</html>
