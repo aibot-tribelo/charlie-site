@@ -1447,8 +1447,40 @@ document.querySelectorAll('.star').forEach(star => {
   });
 });
 
-function loadComments() {
-  const comments = JSON.parse(localStorage.getItem('cmr_comments') || '[]');
+async function fetchSharedComments() {
+  try {
+    const res = await fetch('https://ntfy.sh/cmr-site-comments-x7k9/json?since=24h', { cache: 'no-store' });
+    if (!res.ok) return [];
+    const raw = await res.text();
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    const comments = [];
+
+    for (const line of lines) {
+      try {
+        const msg = JSON.parse(line);
+        if (!msg.message || typeof msg.message !== 'string') continue;
+        if (!msg.message.startsWith('CMR_COMMENT::')) continue;
+        const payload = JSON.parse(msg.message.replace('CMR_COMMENT::', ''));
+        comments.push(payload);
+      } catch (_) {}
+    }
+
+    const unique = [];
+    const seen = new Set();
+    for (const c of comments) {
+      const key = `${c.name}|${c.text}|${c.time}|${c.rating}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(c);
+    }
+    return unique;
+  } catch (_) {
+    return [];
+  }
+}
+
+async function loadComments() {
+  const comments = await fetchSharedComments();
   const list = document.getElementById('comments-list');
   const noComments = document.getElementById('no-comments');
   list.innerHTML = '';
@@ -1473,7 +1505,7 @@ function loadComments() {
   });
 }
 
-function postComment() {
+async function postComment() {
   const nameEl = document.getElementById('comment-name');
   const textEl = document.getElementById('comment-text');
   const error = document.getElementById('comment-error');
@@ -1484,23 +1516,23 @@ function postComment() {
     setTimeout(() => error.classList.remove('show'), 2500);
     return;
   }
-  const comments = JSON.parse(localStorage.getItem('cmr_comments') || '[]');
+
   const now = new Date();
   const time = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  comments.push({ name, text, time, rating: selectedRating });
-  localStorage.setItem('cmr_comments', JSON.stringify(comments));
-  // Send notification
-  fetch('https://ntfy.sh/cmr-site-comments-x7k9', {
+  const payload = { name, text, time, rating: selectedRating };
+
+  await fetch('https://ntfy.sh/cmr-site-comments-x7k9', {
     method: 'POST',
     headers: { 'Title': name + ' rated ' + '★'.repeat(selectedRating), 'Tags': 'speech_balloon' },
-    body: text
+    body: 'CMR_COMMENT::' + JSON.stringify(payload)
   }).catch(() => {});
+
   selectedRating = 0;
   document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
   document.getElementById('rating-text').textContent = '';
   nameEl.value = '';
   textEl.value = '';
-  loadComments();
+  await loadComments();
 }
 
 function escapeHtml(str) {
