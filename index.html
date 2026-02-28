@@ -43,6 +43,47 @@ body::before {
   z-index: 9999;
 }
 
+/* ─── GATE ─── */
+.gate-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--darker);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.gate-overlay.unlocked {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease-out;
+}
+
+.gate-content { max-width: 400px; }
+
+.gate-icon { font-size: 3rem; margin-bottom: 1.5rem; }
+
+.gate-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.15em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.gate-desc {
+  color: var(--mid-grey);
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+
+body.locked { overflow: hidden; }
+
 /* ─── NAV ─── */
 nav {
   position: fixed;
@@ -750,6 +791,20 @@ footer .footer-name {
 </head>
 <body>
 
+<!-- GATE -->
+<div class="gate-overlay" id="gate-overlay">
+  <div class="gate-content">
+    <div class="gate-icon">🔐</div>
+    <h1 class="gate-title">CHARLIE ROBINSON</h1>
+    <p class="gate-desc">Private site. Enter the password to continue.</p>
+    <div class="vault-input-wrap">
+      <input type="password" class="vault-input" id="gate-password" placeholder="Password..." onkeydown="if(event.key==='Enter')unlockGate()">
+      <button class="vault-btn" onclick="unlockGate()">ENTER</button>
+    </div>
+    <div class="vault-error" id="gate-error">Wrong password 🚫</div>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="logo">CMR <span>/ 13</span></div>
@@ -1093,6 +1148,27 @@ footer .footer-name {
 </footer>
 
 <script>
+// Gate
+document.body.classList.add('locked');
+if (sessionStorage.getItem('gate_unlocked')) {
+  document.getElementById('gate-overlay').classList.add('unlocked');
+  document.body.classList.remove('locked');
+}
+
+function unlockGate() {
+  const input = document.getElementById('gate-password');
+  const error = document.getElementById('gate-error');
+  if (input.value === atob('VGhlUmVhbE9uZXM=')) {
+    document.getElementById('gate-overlay').classList.add('unlocked');
+    document.body.classList.remove('locked');
+    sessionStorage.setItem('gate_unlocked', 'true');
+  } else {
+    error.classList.add('show');
+    input.value = '';
+    setTimeout(() => error.classList.remove('show'), 2000);
+  }
+}
+
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
