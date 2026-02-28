@@ -728,6 +728,80 @@ section {
 
 .gallery-placeholder .icon { font-size: 3rem; margin-bottom: 1rem; }
 
+/* ─── COMMENTS ─── */
+.comment-form {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.comment-textarea {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 0.9rem 1.3rem;
+  color: var(--white);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.3s;
+}
+
+.comment-textarea:focus { border-color: rgba(255,255,255,0.25); }
+.comment-textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+.comments-list {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  animation: fadeUp 0.4s ease-out;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.comment-author {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: var(--white);
+}
+
+.comment-time {
+  font-size: 0.7rem;
+  color: var(--mid-grey);
+  letter-spacing: 0.05em;
+}
+
+.comment-body {
+  color: var(--accent);
+  font-weight: 300;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.no-comments {
+  text-align: center;
+  color: var(--mid-grey);
+  font-weight: 300;
+  padding: 2rem;
+}
+
 /* ─── FOOTER ─── */
 footer {
   text-align: center;
@@ -815,6 +889,7 @@ footer .footer-name {
     <li><a href="#people">People</a></li>
     <li><a href="#vault">Vault</a></li>
     <li><a href="#gallery">Photos</a></li>
+    <li><a href="#comments">💬</a></li>
   </ul>
 </nav>
 
@@ -1138,6 +1213,21 @@ footer .footer-name {
   </div>
 </section>
 
+<!-- COMMENTS -->
+<section id="comments">
+  <div class="reveal">
+    <p class="section-label">07 — Say Something</p>
+    <h2 class="section-title">Comments</h2>
+  </div>
+  <div class="comment-form reveal">
+    <input type="text" class="vault-input comment-name-input" id="comment-name" placeholder="Your name..." style="width:100%;margin-bottom:0.8rem;">
+    <textarea class="vault-input comment-textarea" id="comment-text" placeholder="Leave a comment..." rows="3"></textarea>
+    <button class="vault-btn" onclick="postComment()" style="margin-top:0.8rem;">POST</button>
+  </div>
+  <div class="comments-list" id="comments-list"></div>
+  <div class="no-comments" id="no-comments">No comments yet — be the first! 💬</div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-name">CHARLIE MALCOLM ROBINSON</div>
@@ -1234,6 +1324,55 @@ function closeFriend(e) {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFriend(); });
+
+// Comments
+function loadComments() {
+  const comments = JSON.parse(localStorage.getItem('cmr_comments') || '[]');
+  const list = document.getElementById('comments-list');
+  const noComments = document.getElementById('no-comments');
+  list.innerHTML = '';
+  if (comments.length === 0) {
+    noComments.style.display = 'block';
+    return;
+  }
+  noComments.style.display = 'none';
+  comments.slice().reverse().forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'comment-card';
+    card.innerHTML = `
+      <div class="comment-header">
+        <span class="comment-author">${escapeHtml(c.name)}</span>
+        <span class="comment-time">${c.time}</span>
+      </div>
+      <div class="comment-body">${escapeHtml(c.text)}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function postComment() {
+  const nameEl = document.getElementById('comment-name');
+  const textEl = document.getElementById('comment-text');
+  const name = nameEl.value.trim();
+  const text = textEl.value.trim();
+  if (!name || !text) return;
+  const comments = JSON.parse(localStorage.getItem('cmr_comments') || '[]');
+  const now = new Date();
+  const time = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  comments.push({ name, text, time });
+  localStorage.setItem('cmr_comments', JSON.stringify(comments));
+  nameEl.value = '';
+  textEl.value = '';
+  loadComments();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+loadComments();
 
 // Vault
 function unlockVault() {
