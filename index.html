@@ -810,45 +810,53 @@ footer .footer-name {
     <h2 class="section-title">Passions</h2>
   </div>
   <div class="passions-grid">
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('snowboarding')">
       <span class="passion-icon">🏂</span>
       <div class="passion-name">Snowboarding</div>
       <div class="passion-rank">#1 Sport</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('golf')">
       <span class="passion-icon">⛳</span>
       <div class="passion-name">Golf</div>
       <div class="passion-rank">#2 Sport</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('watersports')">
       <span class="passion-icon">🌊</span>
       <div class="passion-name">Watersports</div>
       <div class="passion-rank">#3 Sport</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('rugby')">
       <span class="passion-icon">🏉</span>
       <div class="passion-name">Rugby</div>
       <div class="passion-rank">#4 Sport</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('padel')">
       <span class="passion-icon">🎾</span>
       <div class="passion-name">Padel</div>
       <div class="passion-rank">#5 Sport</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('tech')">
       <span class="passion-icon">💻</span>
       <div class="passion-name">Tech & Gadgets</div>
       <div class="passion-rank">Always</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('business')">
       <span class="passion-icon">💰</span>
       <div class="passion-name">Business</div>
       <div class="passion-rank">Hustle</div>
+      <div class="card-hint">Tap to view</div>
     </div>
-    <div class="passion-card reveal">
+    <div class="passion-card friend-btn reveal" onclick="openFriend('supercars')">
       <span class="passion-icon">🏎️</span>
       <div class="passion-name">Supercars</div>
       <div class="passion-rank">Obsessed</div>
+      <div class="card-hint">Tap to view</div>
     </div>
   </div>
 </section>
@@ -1099,6 +1107,15 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // Friend photos data
 const friendPhotos = {
+  // Passions
+  snowboarding: { name: 'Snowboarding 🏂', photos: ['photos/charlie/snow-132.jpg', 'photos/charlie/snow-136.jpg', 'photos/charlie/snow-120.jpg', 'photos/charlie/snow-112.jpg', 'photos/charlie/snow-135.jpg', 'photos/charlie/snow-134.jpg', 'photos/charlie/snow-121.jpg', 'photos/charlie/snow-114.jpg', 'photos/charlie/snow-115.jpg', 'photos/charlie/snow-124.jpg', 'photos/charlie/snow-125.jpg', 'photos/charlie/snow-126.jpg', 'photos/charlie/snow-122.jpg', 'photos/charlie/snow-123.jpg', 'photos/charlie/snow-127.jpg', 'photos/charlie/snow-128.jpg', 'photos/charlie/snow-129.jpg', 'photos/charlie/snow-131.jpg'] },
+  golf: { name: 'Golf ⛳', photos: [] },
+  watersports: { name: 'Watersports 🌊', photos: [] },
+  rugby: { name: 'Rugby 🏉', photos: [] },
+  padel: { name: 'Padel 🎾', photos: [] },
+  tech: { name: 'Tech & Gadgets 💻', photos: [] },
+  business: { name: 'Business 💰', photos: [] },
+  supercars: { name: 'Supercars 🏎️', photos: [] },
   // Family
   noel: { name: 'Noel — Dad', photos: ['photos/charlie/snow-130.jpg', 'photos/charlie/snow-131.jpg', 'photos/charlie/snow-129.jpg', 'photos/charlie/snow-116.jpg', 'photos/charlie/snow-117.jpg', 'photos/charlie/snow-118.jpg', 'photos/charlie/snow-119.jpg'] },
   helen: { name: 'Helen — Mum', photos: [] },
