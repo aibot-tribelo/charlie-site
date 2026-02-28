@@ -1399,6 +1399,12 @@ function postComment() {
   const time = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   comments.push({ name, text, time });
   localStorage.setItem('cmr_comments', JSON.stringify(comments));
+  // Send notification
+  fetch('https://ntfy.sh/cmr-site-comments-x7k9', {
+    method: 'POST',
+    headers: { 'Title': name + ' commented', 'Tags': 'speech_balloon' },
+    body: text
+  }).catch(() => {});
   nameEl.value = '';
   textEl.value = '';
   loadComments();
