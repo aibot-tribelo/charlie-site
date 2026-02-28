@@ -84,6 +84,32 @@ body::before {
 
 body.locked { overflow: hidden; }
 
+.pw-wrap {
+  position: relative;
+  display: inline-block;
+  width: 240px;
+}
+
+.pw-wrap .vault-input { width: 100%; padding-right: 2.5rem; }
+
+.pw-toggle {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+  user-select: none;
+}
+
+.pw-toggle:hover { opacity: 0.8; }
+
+@media (max-width: 768px) {
+  .pw-wrap { width: 100%; }
+}
+
 /* ─── NAV ─── */
 nav {
   position: fixed;
@@ -872,7 +898,7 @@ footer .footer-name {
     <h1 class="gate-title">CHARLIE ROBINSON</h1>
     <p class="gate-desc">Private site. Enter the password to continue.</p>
     <div class="vault-input-wrap">
-      <input type="password" class="vault-input" id="gate-password" placeholder="Password..." onkeydown="if(event.key==='Enter')unlockGate()">
+      <div class="pw-wrap"><input type="password" class="vault-input" id="gate-password" placeholder="Password..." onkeydown="if(event.key==='Enter')unlockGate()"><span class="pw-toggle" onclick="togglePw('gate-password',this)">👁</span></div>
       <button class="vault-btn" onclick="unlockGate()">ENTER</button>
     </div>
     <div class="vault-error" id="gate-error">Wrong password 🚫</div>
@@ -1136,7 +1162,7 @@ footer .footer-name {
       <div class="vault-title">Private Section</div>
       <div class="vault-desc">This area is password protected. If you know, you know.</div>
       <div class="vault-input-wrap">
-        <input type="password" class="vault-input" id="vault-password" placeholder="Enter password..." onkeydown="if(event.key==='Enter')unlockVault()">
+        <div class="pw-wrap"><input type="password" class="vault-input" id="vault-password" placeholder="Enter password..." onkeydown="if(event.key==='Enter')unlockVault()"><span class="pw-toggle" onclick="togglePw('vault-password',this)">👁</span></div>
         <button class="vault-btn" onclick="unlockVault()">UNLOCK</button>
       </div>
       <div class="vault-error" id="vault-error">Wrong password. Nice try though 😏</div>
@@ -1253,6 +1279,18 @@ function unlockGate() {
     error.classList.add('show');
     input.value = '';
     setTimeout(() => error.classList.remove('show'), 2000);
+  }
+}
+
+// Password toggle
+function togglePw(id, el) {
+  const input = document.getElementById(id);
+  if (input.type === 'password') {
+    input.type = 'text';
+    el.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    el.textContent = '👁';
   }
 }
 
